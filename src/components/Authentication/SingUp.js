@@ -68,6 +68,7 @@ const LoginToolTip = styled(Typography)`
 `
 
 const ImageContainer = styled(Grid)`
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -146,8 +147,14 @@ export default function SignUp() {
         if (!values.email) {
             errors.email = ''
         }
+        if (!values.address) {
+            errors.address = ''
+        }
         if (!values.gender) {
             errors.gender = ''
+        }
+        if (!values.phone_number) {
+            errors.phone_number = ''
         }
         if (!values.password) {
             errors.password = ''
@@ -169,90 +176,104 @@ export default function SignUp() {
         <div>
             <HeaderMenu />
             {!success ?
-            <SingUpPage>
-                {loading ? <Loading /> : <Form
-                    onSubmit={handleSubmit}
-                    validate={values => validate(values)}
-                    render={({ handleSubmit, reset, submitting, pristine, values, valid }) => (
-                        <SingUpForm onSubmit={handleSubmit}>
-                            <SingUpLabel variant="h5" color="primary">
-                                <SingUpIcon color="primary" />{'Регистрация'}
-                            </SingUpLabel>
-                            <InputsContainer container spacing={2}>
-                                <Grid container item xs={12} sm={5}>
-                                    <ImageContainer item xs={12}>
-                                        <Image src={image}>
-                                            {getNameAvatar(values.firstName, values.secondName)}
-                                        </Image>
-                                        <Field name='avatar' defaultValue={null}>
+                <SingUpPage>
+                    {loading ? <Loading /> : <Form
+                        onSubmit={handleSubmit}
+                        validate={values => validate(values)}
+                        render={({ handleSubmit, reset, submitting, pristine, values, valid }) => (
+                            <SingUpForm onSubmit={handleSubmit}>
+                                <SingUpLabel variant="h5" color="primary">
+                                    <SingUpIcon color="primary" />{'Регистрация'}
+                                </SingUpLabel>
+                                <InputsContainer container spacing={2}>
+                                    <Grid container item xs={12} sm={5}>
+                                        <ImageContainer item xs={12}>
+                                            <Image src={image}>
+                                                {getNameAvatar(values.firstName, values.secondName)}
+                                            </Image>
+                                            <Field name='avatar' defaultValue={null}>
+                                                {props => (
+                                                    <FileInput
+                                                        formats='.png, .jpg, .jpeg'
+                                                        text={'Выбрать аватар'}
+                                                        image={setImage}
+                                                        {...props.input} />
+                                                )}
+                                            </Field>
+                                        </ImageContainer>
+                                        <ResetButton item xs={12}>
+                                            <Button onClick={() => { setImage(null); values.avatar = null }} variant="contained" color="secondary">
+                                                {'Сбросить'}
+                                            </Button>
+                                        </ResetButton>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <Field name='firstName'>
                                             {props => (
-                                                <FileInput
-                                                    formats='.png, .jpg, .jpeg'
-                                                    text={'Выбрать аватар'}
-                                                    image={setImage}
-                                                    {...props.input} />
-                                            )}
+                                                <TextInput
+                                                    props={props}
+                                                    label={'Имя'}
+                                                />)}
                                         </Field>
-                                    </ImageContainer>
-                                    <ResetButton item xs={12}>
-                                        <Button onClick={() => { setImage(null); values.avatar = null }} variant="contained" color="secondary">
-                                            {'Сбросить'}
-                                        </Button>
-                                    </ResetButton>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Field name='firstName'>
-                                        {props => (
-                                            <TextInput
-                                                props={props}
-                                                label={'Имя'}
-                                            />)}
-                                    </Field>
-                                    <Field name='secondName'>
-                                        {props => (
-                                            <TextInput
-                                                props={props}
-                                                label={'Фамилия'}
-                                            />)}
-                                    </Field>
-                                    <Field name='email'>
-                                        {props => (
-                                            <TextInput
-                                                props={props}
-                                                label={'Email'}
-                                            />)}
-                                    </Field>
-                                </Grid>
-                                <GridForm container item xs={12} sm={5}>
-                                    <Field name="gender">
-                                        {props => (<RadioButtonInput type="radio" props={props} values={['Мужской', 'Женский']} />)}
-                                    </Field>
-                                </GridForm>
-                                <GridForm container item xs={12} sm={6}>
-                                    <Grid item xs={12}>
-                                        <Field name='password'>
-                                            {(props, meta) => (<Password props={props} />)}
+                                        <Field name='secondName'>
+                                            {props => (
+                                                <TextInput
+                                                    props={props}
+                                                    label={'Фамилия'}
+                                                />)}
+                                        </Field>
+                                        <Field name='email'>
+                                            {props => (
+                                                <TextInput
+                                                    props={props}
+                                                    label={'Email'}
+                                                />)}
+                                        </Field>
+                                        <Field name='address'>
+                                            {props => (
+                                                <TextInput
+                                                    props={props}
+                                                    label={'Адресс'}
+                                                />)}
+                                        </Field>
+                                        <Field name='phone_number'>
+                                            {props => (
+                                                <TextInput
+                                                    props={props}
+                                                    label={'Номер телефона +7XXXXXXXXXX'}
+                                                />)}
                                         </Field>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <Field name='confirmPassword'>
-                                            {props => (<Password props={props} text={'Повторите пароль'} />)}
+                                    <GridForm container item xs={12} sm={5}>
+                                        <Field name="gender">
+                                            {props => (<RadioButtonInput type="radio" props={props} values={['Мужской', 'Женский']} />)}
                                         </Field>
-                                    </Grid>
-                                </GridForm>
-                            </InputsContainer>
-                            <SingUpButton variant="contained" color="primary" type="submit" disabled={!valid}>
-                                {'Зарегистрироваться'}
-                            </SingUpButton>
-                            <LoginToolTip variant="subtitle2">
-                                {'Уже есть аккаунт? '}
-                                <LoginLink to="/auth/login">
-                                    {'Войдите'}
-                                </LoginLink>
-                            </LoginToolTip>
-                        </ SingUpForm>
-                    )} />}
-            </SingUpPage> : RedirectToLogin()}
+                                    </GridForm>
+                                    <GridForm container item xs={12} sm={6}>
+                                        <Grid item xs={12}>
+                                            <Field name='password'>
+                                                {(props, meta) => (<Password props={props} />)}
+                                            </Field>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Field name='confirmPassword'>
+                                                {props => (<Password props={props} text={'Повторите пароль'} />)}
+                                            </Field>
+                                        </Grid>
+                                    </GridForm>
+                                </InputsContainer>
+                                <SingUpButton variant="contained" color="primary" type="submit" disabled={!valid}>
+                                    {'Зарегистрироваться'}
+                                </SingUpButton>
+                                <LoginToolTip variant="subtitle2">
+                                    {'Уже есть аккаунт? '}
+                                    <LoginLink to="/auth/login">
+                                        {'Войдите'}
+                                    </LoginLink>
+                                </LoginToolTip>
+                            </ SingUpForm>
+                        )} />}
+                </SingUpPage> : RedirectToLogin()}
         </div>
     );
 }

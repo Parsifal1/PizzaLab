@@ -107,6 +107,15 @@ export default function Menu() {
         )
     }
 
+    const AccManagement = () => {
+        return (
+            <MenuButton
+                path={'/lk'}
+                icon={'settings'}
+                text={'Личный кабинет'} />
+        )
+    }
+
     return (
         <BackgroundMenu>
 
@@ -117,6 +126,7 @@ export default function Menu() {
                 <RightMenuBar>
                     <Cart />
                     <Notifications />
+                    <AccManagement />
                     <LogOut />
                 </RightMenuBar>
                 :

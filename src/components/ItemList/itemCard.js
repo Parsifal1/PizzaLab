@@ -98,11 +98,10 @@ export default function BookCard(props) {
         }
 
         dispatch({ type: "SET_CART", cart: curCart })
-        console.log(curCart)
     }
 
     return (
-        <Background>
+        <Background key={data.id}>
             <Image src={`data:image/${data.type};base64, ${data.data}`} />
             <Info>
                 <Title>

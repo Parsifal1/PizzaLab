@@ -7,10 +7,8 @@ import axios from 'axios'
 
 const Background = styled(Container)`
     padding: unset;
-    width: 350px;
-    margin: initial;
     padding: 0px;
-    margin: initial;
+    display: flex;
     &:hover {
         cursor: pointer;
     }
@@ -19,7 +17,8 @@ const Background = styled(Container)`
 
 const Image = styled(Avatar)`
     width: fit-content;
-    height: 250px;
+    height: 200px;
+    width: 300px;
     border-radius: 0px;
 `
 
@@ -35,18 +34,46 @@ const Recipe = styled(Typography)`
     font-size: 0.9rem;
 `
 
-const RemoveFromCart = styled(Button)`
+const CountInfo = styled(Button)`
     && {
+        border-radius: 0px;
         display: flex;
         margin: auto;
-        width: 300px;
+        height: 50px;
+        width: 150px;
         color: white;
-        margin: 10px auto 10px auto;
+        border-radius: 0px;
+    }
+`
+
+const DelteItem = styled(Button)`
+    && {
+        height: 50px;
+        border-radius: 15px;
+        width: 20px;
+        border-bottom-right-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+`
+
+const AddItem = styled(Button)`
+    && {
+        height: 50px;
+        border-radius: 15px;
+        width: 20px;
+        border-bottom-left-radius: 0px;
+        border-top-left-radius: 0px;
     }
 `
 
 const Info = styled(Container)`
     padding: 0px 10px 5px 10px;
+`
+
+const ChangeCount = styled(Container)`
+    display: flex;
+    align-items: center;
+    width: fit-content;
 `
 
 export default function CartItem(props) {
@@ -63,25 +90,33 @@ export default function CartItem(props) {
 
     const cart = useSelector(state => state.cart)
 
+    props.changeTotalCost()
 
-    const handleCartChange = () => {
+    const handleCartChange = (action) => {
         var currentCart = cart
 
         var item = currentCart.indexOf(currentCart.find((item) => item.id === data.id))
 
-        if (delCount >= currentCart[item].count) {
-            if (currentCart.length < 2) {
-                currentCart = []
+        if (action === '-') {
+            if (delCount >= currentCart[item].count) {
+                if (currentCart.length < 2) {
+                    currentCart = []
+                } else {
+                    currentCart.splice(item, 1)
+                    setTotalCount(0)
+                }
             } else {
-                currentCart.splice(item, 1)
-                setTotalCount(0)
+                currentCart[item].count -= 1
+                setTotalCount(currentCart[item].count)
+                setTotalCost(currentCart[item].count * currentCart[item].cost)
             }
         } else {
-            currentCart[item].count -= delCount
-            setTotalCount(currentCart[item].count)
-            setTotalCost(currentCart[item].count * currentCart[item].cost)
+                currentCart[item].count += 1
+                setTotalCount(currentCart[item].count)
+                setTotalCost(currentCart[item].count * currentCart[item].cost)
         }
         dispatch({ type: "SET_CART", cart: currentCart })
+        props.changeTotalCost()
     }
 
     const makeRecipe = () => {
@@ -102,10 +137,14 @@ export default function CartItem(props) {
                     {data.name}
                 </Title>
                 <Recipe>{`Состав: ${makeRecipe()}`}</Recipe>
-                <RemoveFromCart onClick={handleCartChange} variant="contained" color="primary">
-                    {`Убрать | ${totalCost}₽ | ${totalCount}`}
-                </RemoveFromCart>
             </Info>
+            <ChangeCount>
+                <DelteItem onClick={() => { handleCartChange('-') }} variant="contained" color="primary">-</DelteItem>
+                <CountInfo variant="contained" color="primary">
+                    {`${totalCost}₽ | ${totalCount}`}
+                </CountInfo>
+                <AddItem onClick={() => { handleCartChange('+') }} variant="contained" color="primary">+</AddItem>
+            </ChangeCount>
         </Background> : null
     )
 }

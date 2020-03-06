@@ -8,6 +8,7 @@ import Cart from './components/cart/cart'
 import axios from 'axios'
 import Auth from './components/Authentication/Auth'
 import SingUp from './components/Authentication/SingUp'
+import Lk from './components/Lk/lk'
 
 axios.defaults.baseURL = serverUrl
 axios.defaults.headers.post['Content-Type'] = 'application/JSON';
@@ -37,6 +38,7 @@ function App() {
       <Route path="/auth" component={Auth} />
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/registration" component={SingUp} />
+      <Route path="/lk" component={Lk} />
     </Router>
   );
 }

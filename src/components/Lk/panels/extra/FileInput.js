@@ -6,8 +6,8 @@ const FileInputForm = styled.div`
     position: absolute;
     border-radius: inherit;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    width: 150px;
-    height: 150px;
+    width: inherit;
+    height: inherit;
     outline: none;
     display: flex;
     text-align: center;
