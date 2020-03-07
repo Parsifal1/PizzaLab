@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const Loader = styled.div`
     && {
     }
-`;
+`
 
 export function Loading() {
     return (

@@ -4,6 +4,10 @@ import { Form, Field } from 'react-final-form'
 import { Button, Avatar, Container } from '@material-ui/core';
 import { TextInput } from '../../Authentication/LoginInput/TextInput'
 import { FileInput } from '../panels/extra/FileInput'
+import axios from 'axios'
+import { Loading } from '../../Loading/Loading'
+import Message from '../../ActionsMessages/message'
+
 
 const AddItemForm = styled.form`
 `
@@ -36,34 +40,58 @@ export default function AddItem(props) {
         error: false,
     })
 
-    const [image, setImage] = useState(null)
+    const [message, setMessage] = useState(null)
+
+    const [loading, setLoading] = useState(false)
+
+    const [image, setImage] = useState(props.data ? props.data.avatar : null)
 
     const handleSubmit = data => {
-        /* setLoading(true)
-        axios
-            .post('/api/login', data)
-            .then((response) => {
-                if (response.status === 200) {
-                    axios
-                        .get('/api/user/info')
-                        .then((response) => {
-                            if (response.status === 200) {
-                                setLoading(false)
-                                dispatch({ type: "SET_USER", user: response.data })
-                                const user = response.data
-                                console.log(user)
-                            }
-                        })
-                        .catch((error) => {
-                            setLoading(false)
-                            setErrors({ ...errors, error: true })
-                        })
-                }
-            })
-            .catch(error => {
-                setLoading(false)
-                setErrors({ ...errors, error: true })
-            }) */
+        console.log(data)
+        data.recipe = data.recipe.split(/[,.|:;\/]+/).map(item => item.trim())
+        setLoading(true)
+        if (props.update) {
+            props.updateLoading(true)
+            axios
+                .post('/api/item/update', data)
+                .then((response) => {
+                    setMessage({
+                        text: 'Позиция успешно обновлена',
+                        type: 'done'
+                    })
+                    props.updateLoading(false)
+                    setTimeout(() => { setMessage(null) }, 5000);
+                })
+                .catch(error => {
+                    setLoading(false)
+                    setMessage({
+                        text: 'Ошибка при обновлении позиции',
+                        type: 'error'
+                    })
+                    props.updateLoading(false)
+                    setTimeout(() => { setMessage(null) }, 5000);
+                    setErrors({ ...errors, error: true })
+                })
+        } else {
+            axios
+                .post('/api/item/add', data)
+                .then((response) => {
+                    setMessage({
+                        text: 'Позиция успешно добавлена',
+                        type: 'done'
+                    })
+                    setTimeout(() => { setMessage(null) }, 5000);
+                })
+                .catch(error => {
+                    setLoading(false)
+                    setMessage({
+                        text: 'Ошибка при добавлении позиции',
+                        type: 'error'
+                    })
+                    setTimeout(() => { setMessage(null) }, 5000);
+                    setErrors({ ...errors, error: true })
+                })
+        }
     }
 
     const validate = (values) => {
@@ -84,51 +112,53 @@ export default function AddItem(props) {
     }
 
     return (
-        <Form
-            onSubmit={handleSubmit}
-            validate={values => validate(values)}
-            render={({ handleSubmit, reset, submitting, pristine, values, valid }) => (
-                <AddItemForm onSubmit={handleSubmit}>
-                    <ImageField>
-                        <Image src={image}></Image>
-                        <Field name='avatar' defaultValue={null}>
+        message ? <Message message={message.text} type={message.type} /> :
+            loading ? <Loading /> : <Form
+                onSubmit={handleSubmit}
+                validate={values => validate(values)}
+                initialValues={props.data}
+                render={({ handleSubmit, reset, submitting, pristine, values, valid }) => (
+                    <AddItemForm onSubmit={handleSubmit}>
+                        <ImageField>
+                            <Image src={image}></Image>
+                            <Field name='avatar' defaultValue={null}>
+                                {props => (
+                                    <ImageInput
+                                        formats='.png, .jpg, .jpeg'
+                                        text={'Загрузить изображение'}
+                                        image={setImage}
+                                        {...props.input} />
+                                )}
+                            </Field>
+                        </ImageField>
+                        <Field name='name'>
                             {props => (
-                                <ImageInput
-                                    formats='.png, .jpg, .jpeg'
-                                    text={'Загрузить изображение'}
-                                    image={setImage}
-                                    {...props.input} />
-                            )}
+                                <TextInput
+                                    props={props}
+                                    error={errors.error}
+                                    label={'Название позиции'}
+                                />)}
                         </Field>
-                    </ImageField>
-                    <Field name='name'>
-                        {props => (
-                            <TextInput
-                                props={props}
-                                error={errors.error}
-                                label={'Название позиции'}
-                            />)}
-                    </Field>
-                    <Field name='recipe'>
-                        {props => (
-                            <TextInput
-                                props={props}
-                                error={errors.error}
-                                label={'Рецепт'}
-                            />)}
-                    </Field>
-                    <Field name='cost'>
-                        {props => (
-                            <TextInput
-                                props={props}
-                                error={errors.error}
-                                label={'Стоимость'}
-                            />)}
-                    </Field>
-                    <SubmitButton variant="contained" color="primary" type="submit" disabled={!valid}>
-                        {'Добавить'}
-                    </SubmitButton>
-                </AddItemForm>
-            )} />
+                        <Field name='recipe'>
+                            {props => (
+                                <TextInput
+                                    props={props}
+                                    error={errors.error}
+                                    label={'Рецепт'}
+                                />)}
+                        </Field>
+                        <Field name='cost'>
+                            {props => (
+                                <TextInput
+                                    props={props}
+                                    error={errors.error}
+                                    label={'Стоимость'}
+                                />)}
+                        </Field>
+                        <SubmitButton variant="contained" color="primary" type="submit" disabled={!valid}>
+                            {'Добавить'}
+                        </SubmitButton>
+                    </AddItemForm>
+                )} />
     )
 }

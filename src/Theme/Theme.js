@@ -17,10 +17,10 @@ export const theme = createMuiTheme({
     palette: {
         primary: {
             main: '#ED565D',
-        }, // Purple and green play nicely together.
+        }, 
         secondary: {
             main: '#544759',
-        }, // This is just green.A700 as hex.
+        }, 
     },
     background: {
         main: '#dbdbdb',
@@ -35,5 +35,8 @@ export const theme = createMuiTheme({
     },
     error: {
         main: '#ff2b2b'
+    },
+    done: {
+        main: '#4CAF50'
     }
 });

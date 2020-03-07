@@ -10,6 +10,8 @@ import {
     ExpansionPanelSummary
 } from '@material-ui/core';
 import AddItem from './panels/addItem'
+import DeleteItem from './panels/deleteItem'
+import UpdateItem from './panels/updateItem'
 import PanelOption from './panels/panelOption'
 import HeaderMenu from '../menu/HeaderMenu'
 
@@ -45,13 +47,13 @@ export default function Lk(props) {
                     panelName={'update_item'}
                     handleChange={handleChange}
                     title={'Изменить позицию'}
-                    panel={AddItem} />
+                    panel={UpdateItem} />
                 <PanelOption
                     expanded={expanded}
                     panelName={'delete_item'}
                     handleChange={handleChange}
                     title={'Удалить позицию'}
-                    panel={AddItem} />
+                    panel={DeleteItem} />
             </Options>
         </Background>
     )
