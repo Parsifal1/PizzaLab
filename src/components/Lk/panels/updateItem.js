@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Form, Field } from 'react-final-form'
 import { Button } from '@material-ui/core';
-import { TextInput } from '../../Authentication/LoginInput/TextInput'
-import { FileInput } from '../panels/extra/FileInput'
-import axios from 'axios'
-import { Loading } from '../../Loading/Loading'
-import Message from '../../ActionsMessages/message'
-import CartItem from '../../cart/cartItem'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import AddItem from './addItem'
@@ -31,15 +22,7 @@ export default function UpdateItem(props) {
     //var items = props.data
     var items = data
 
-    const [errors, setErrors] = useState({
-        error: false,
-    })
-
-    const [message, setMessage] = useState(null)
-
     const [loading, setLoading] = useState(false)
-
-    const [checked, setChecked] = useState([0]);
 
     const [selected, setSelected] = useState(false);
 
@@ -51,25 +34,6 @@ export default function UpdateItem(props) {
             recipe: item.recipe.join(','),
             cost: item.cost
         })
-        /* setLoading(true)
-        axios
-            .post('/api/item/delete', checked.splice(1))
-            .then((response) => {
-                setMessage({
-                    text: 'Выбранные позиции удалены',
-                    type: 'done'
-                })
-                setTimeout(() => { setMessage(null) }, 5000);
-            })
-            .catch(error => {
-                setLoading(false)
-                setMessage({
-                    text: 'Ошибка при удалении позиций',
-                    type: 'error'
-                })
-                setTimeout(() => { setMessage(null) }, 5000);
-                setErrors({ ...errors, error: true })
-            }) */
     }
 
     return (

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { Button, Typography, Container, Avatar } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import ItemCard from './itemCard'
 
 const Background = styled(Container)`
@@ -13,7 +13,7 @@ export default function ItemList(props) {
 
     return (
         <Background>
-            { data.length ? data.map( item => {return <ItemCard data={item}/>}) : <div>Пусто</div>}
+            {data.length ? data.map(item => { return <ItemCard key={item.id} data={item} /> }) : <div>Пусто</div>}
         </Background>
     )
 }

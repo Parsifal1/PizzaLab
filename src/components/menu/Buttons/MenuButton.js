@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Container, Typography, Button, Badge } from '@material-ui/core';
+import React from 'react';
+import { Typography, Button, Badge } from '@material-ui/core';
 import styled from 'styled-components'
-import { theme } from '../../../Theme/Theme'
 import Icons from '@material-ui/core/Icon'
 import { Link } from "react-router-dom";
 
@@ -36,7 +35,6 @@ const Text = styled(Typography)`
 
 export default function MenuButton(props) {
 
-    const [invisible, setInvisible] = useState(true);
 
     return (
         <Link to={props.path ? props.path : ''}>

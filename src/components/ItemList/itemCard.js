@@ -1,9 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { Button, Typography, Container, Avatar } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux'
-import Icons from '@material-ui/core/Icon'
-import axios from 'axios'
 
 const onItemHover = keyframes`
     from {
@@ -90,7 +88,7 @@ export default function BookCard(props) {
 
         const item = curCart.indexOf(curCart.find((item) => item.id === data.id))
 
-        if (item != -1) {
+        if (item !== -1) {
             curCart[item].count++
         } else {
             data.count = 1

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Form, Field } from 'react-final-form'
 import { Button, Avatar, Container } from '@material-ui/core';
@@ -48,7 +48,7 @@ export default function AddItem(props) {
 
     const handleSubmit = data => {
         console.log(data)
-        data.recipe = data.recipe.split(/[,.|:;\/]+/).map(item => item.trim())
+        data.recipe = data.recipe.split(/[,.|:;]+/).map(item => item.trim())
         setLoading(true)
         if (props.update) {
             props.updateLoading(true)

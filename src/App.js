@@ -20,7 +20,7 @@ function App() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    /*axios
+    axios
       .get('/api/user/info')
       .then((response) => {
         if (response.status === 200) {
@@ -28,7 +28,7 @@ function App() {
           const user = response.data
           console.log(user)
         }
-      })*/
+      })
   })
 
   return (

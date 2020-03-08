@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Button, Container } from '@material-ui/core';
 import CartItem from './cartItem'
+import { Loading } from '../Loading/Loading'
+import Message from '../ActionsMessages/message'
+import axios from 'axios'
 
 const Background = styled(Container)`
     padding: none;
@@ -18,9 +21,40 @@ const ConfirmButton = styled(Button)`
 
 export default function ItemList(props) {
 
+    const isLogin = useSelector(state => state.user)
+
     const cartItems = useSelector(state => state.cart)
 
     const [totalCost, setTotalCost] = useState()
+
+    const dispatch = useDispatch()
+
+    const [message, setMessage] = useState(false)
+
+    const [loading, setLoading] = useState(false)
+
+    const handleConfirmCart = () => {
+        setLoading(true)
+        axios
+            .post('/api/cart/confirm', cartItems)
+            .then((response) => {
+                setLoading(false)
+                setMessage({
+                    text: `Заказ получен, ожидайте звонка на номер ${isLogin.phone_number}`,
+                    type: 'done'
+                })
+                dispatch({ type: "SET_CART", cart: [] })
+                setTimeout(() => { setMessage(null) }, 5000);
+            })
+            .catch(error => {
+                setLoading(false)
+                setMessage({
+                    text: 'Ошибка при подтверждении заказа, пропробуйте еще раз',
+                    type: 'error'
+                })
+                setTimeout(() => { setMessage(null) }, 5000);
+            })
+    }
 
     const getTotalCost = () => {
         if (cartItems) {
@@ -33,9 +67,15 @@ export default function ItemList(props) {
     }
 
     return (
-        <Background>
-            {cartItems.length ? <ConfirmButton variant="contained" color="primary">{`Сделать заказ | ${totalCost}₽`}</ConfirmButton> : <div></div>}
-            {cartItems.length ? cartItems.map(item => { return <CartItem changeTotalCost={getTotalCost} key={item.id} item={item} /> }) : <div>Пусто</div>}
-        </Background>
+        message ? <Message message={message.text} type={message.type} /> :
+            loading ? <Loading /> : <Background>
+                {cartItems.length ? <ConfirmButton onClick={handleConfirmCart} disabled={!isLogin} variant="contained" color="primary">
+                    {`Сделать заказ | ${totalCost}₽`}
+                </ConfirmButton> : <div></div>}
+                {cartItems.length ? cartItems.map(item => {
+                    return <CartItem changeTotalCost={getTotalCost} key={item.id} item={item} />
+                }) : <div>Пусто</div>
+                }
+            </Background>
     )
 }

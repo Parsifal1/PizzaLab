@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Form, Field } from 'react-final-form'
 import { Button } from '@material-ui/core';
-import { TextInput } from '../../Authentication/LoginInput/TextInput'
-import { FileInput } from '../panels/extra/FileInput'
 import axios from 'axios'
 import { Loading } from '../../Loading/Loading'
 import Message from '../../ActionsMessages/message'
-import CartItem from '../../cart/cartItem'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 
 const DeleteMarkedButton = styled(Button)`
 `

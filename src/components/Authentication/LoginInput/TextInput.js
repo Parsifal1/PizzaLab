@@ -14,7 +14,7 @@ const ErrosMessage = styled(FormHelperText)`
     color: ${theme.error.main};
 `
 
-export function TextInput({ props, error, errorText, label, variant = 'Input' }) {
+export function TextInput({ props, error, errorText, label, variant = 'Input', disabled = false}) {
 
     return (
         <FormControl>
@@ -27,6 +27,7 @@ export function TextInput({ props, error, errorText, label, variant = 'Input' })
                 value={props.input.value}
                 onChange={props.input.onChange}
                 variant={variant}
+                disabled = {disabled}
             />
             {props.meta.error && props.meta.touched && <ErrosMessage>{props.meta.error}</ErrosMessage>}
         </FormControl>

@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 import { Button, Typography, Container, Avatar } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux'
-import Icons from '@material-ui/core/Icon'
-import axios from 'axios'
 
 const Background = styled(Container)`
     padding: unset;
@@ -84,8 +82,6 @@ export default function CartItem(props) {
 
     const [totalCost, setTotalCost] = useState(data.count * data.cost)
 
-    const [delCount, setDelCount] = useState(1)
-
     const dispatch = useDispatch()
 
     const cart = useSelector(state => state.cart)
@@ -98,7 +94,7 @@ export default function CartItem(props) {
         var item = currentCart.indexOf(currentCart.find((item) => item.id === data.id))
 
         if (action === '-') {
-            if (delCount >= currentCart[item].count) {
+            if (1 >= currentCart[item].count) {
                 if (currentCart.length < 2) {
                     currentCart = []
                 } else {
