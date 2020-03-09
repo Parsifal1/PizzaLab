@@ -20,7 +20,7 @@ export function TextInput({ props, error, errorText, label, variant = 'Input', d
         <FormControl>
             <InputLabel>{label}</InputLabel>
             <Input
-                autoComplete="current-email"
+                autoComplete=""
                 name={props.input.name}
                 error={error}
                 type={'text'}
