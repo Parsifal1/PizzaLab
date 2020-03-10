@@ -78,20 +78,10 @@ export default function SignUp(props) {
             .post('/api/login', data)
             .then((response) => {
                 if (response.status === 200) {
-                    axios
-                        .get('/api/user/info')
-                        .then((response) => {
-                            if (response.status === 200) {
-                                setLoading(false)
-                                dispatch({ type: "SET_USER", user: response.data })
-                                const user = response.data
-                                console.log(user)
-                            }
-                        })
-                        .catch((error) => {
-                            setLoading(false)
-                            setErrors({ ...errors, error: true })
-                        })
+                    setLoading(false)
+                    dispatch({ type: "SET_USER", user: response.data })
+                    const user = response.data
+                    console.log(user)
                 }
             })
             .catch(error => {
@@ -113,7 +103,7 @@ export default function SignUp(props) {
 
     return (
         <div>
-            <HeaderMenu/>
+            <HeaderMenu />
             <LoginPage>
                 {loading ? <Loading /> :
                     <Form

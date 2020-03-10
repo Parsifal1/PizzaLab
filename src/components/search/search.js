@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
 import { Container, InputBase } from '@material-ui/core';
 import { theme } from '../../Theme/Theme'
@@ -19,13 +19,20 @@ const SearchInput = styled(InputBase)`
 export default function Search({ data = [], setResult }) {
 
     const [value, setValue] = useState('')
-
     const items = data
+
+    useEffect(() => {
+        if (value === ''){
+            setResult(items)
+        }
+    })
 
     const handleChange = (value) => {
         setValue(value.target.value)
         setResult(GetResults(value.target.value.trim()))
     }
+
+  
 
     const GetResults = (value) => {
         var itemList = []

@@ -11,7 +11,6 @@ const Background = styled(Container)`
 `
 
 export default function ItemList({ data }) {
-
     return (
         <Background>
             {data.length ? data.map(item => { return <ItemCard key={item.id} data={item} /> }) : <Loading />}

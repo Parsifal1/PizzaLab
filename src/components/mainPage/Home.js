@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from 'react-redux'
 import React, { useState } from 'react';
 import HeaderMenu from '../menu/HeaderMenu'
 import ItemList from '../ItemList/itemList'
@@ -5,12 +6,15 @@ import Search from '../search/search'
 
 export default function Home() {
 
-  const [searchResult, setSearchResult] = useState(data)
+  
+  const items = useSelector(store => store.items)
 
+  const [searchResult, setSearchResult] = useState(items)
+  
   return (
     <div>
       <HeaderMenu />
-      <Search setResult={setSearchResult} data={data}/>
+      <Search setResult={setSearchResult} data={items}/>
       <ItemList data={searchResult}/>
     </div>
   )
