@@ -9,14 +9,15 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
+import { useSelector } from 'react-redux'
 
 const DeleteMarkedButton = styled(Button)`
 `
 
-export default function DeleteItem(props) {
+export default function DeleteItem() {
 
     //var items = props.data
-    var items = data
+    const items = useSelector(state => state.items)
 
     const [errors, setErrors] = useState({
         error: false,

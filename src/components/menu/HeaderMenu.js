@@ -37,7 +37,7 @@ export default function Menu() {
 
     const handleLogOut = () => {
         axios
-            .post('api/logout')
+            .get('api/logout')
             .then(response => {
                 dispatch({ type: "SET_USER", user: null })
                 console.log('logOut')

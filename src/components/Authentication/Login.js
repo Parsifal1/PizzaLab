@@ -78,10 +78,19 @@ export default function SignUp(props) {
             .post('/api/login', data)
             .then((response) => {
                 if (response.status === 200) {
-                    setLoading(false)
+                    axios
+                        .get('/api/user/info')
+                        .then((response) => {
+                            if (response.status === 200) {
+                                console.log(response.data)
+                                dispatch({ type: "SET_USER", user: response.data })
+                            }
+                        })
+                        .catch(error => {
+                            console.log('User not logged in')
+                        })
                     dispatch({ type: "SET_USER", user: response.data })
-                    const user = response.data
-                    console.log(user)
+                    setLoading(false)
                 }
             })
             .catch(error => {

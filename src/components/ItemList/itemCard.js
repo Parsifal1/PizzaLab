@@ -44,8 +44,8 @@ const Background = styled(Container)`
 `
 
 const Image = styled(Avatar)`
-    width: fit-content;
-    height: 250px;
+    width: 350px;
+    height: 350px;
     border-radius: 0px;
 `
 

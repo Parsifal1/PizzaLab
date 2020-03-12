@@ -16,38 +16,15 @@ const SearchInput = styled(InputBase)`
     font-size: 1.3rem;
 `
 
-export default function Search({ data = [], setResult }) {
-
-    const [value, setValue] = useState('')
-    const items = data
-
-    useEffect(() => {
-        if (value === ''){
-            setResult(items)
-        }
-    })
+export default function Search({ handleSearch }) {
 
     const handleChange = (value) => {
-        setValue(value.target.value)
-        setResult(GetResults(value.target.value.trim()))
-    }
-
-  
-
-    const GetResults = (value) => {
-        var itemList = []
-        items.forEach(element => {
-            if (element.name.toLowerCase().search(new RegExp(`${value.toLowerCase().split(/[ -]/).join('.')}`)) !== -1) {
-                itemList.push(element)
-            }
-        })
-        return itemList
+        handleSearch(value.target.value)
     }
 
     return (
         <Background>
             <SearchInput
-                value={value}
                 onChange={handleChange}
                 fullWidth
                 placeholder={'Поиск'} />

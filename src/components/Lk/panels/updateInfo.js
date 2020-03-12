@@ -5,7 +5,7 @@ import {
     Button,
     Grid,
     Container,
-    Avatar
+    Avatar,
 } from '@material-ui/core';
 import { TextInput } from '../../Authentication/LoginInput/TextInput'
 import { FileInput } from '../../Authentication/LoginInput/FileInput'
@@ -66,7 +66,7 @@ const SingUpButton = styled(Button)`
     margin: 5px auto 5px auto;
 `
 
-export default function UpdateInfo(props) {
+export default function UpdateInfo() {
 
     var userInfo = useSelector(state => state.user)
 
@@ -74,7 +74,7 @@ export default function UpdateInfo(props) {
 
     const [loading, setLoading] = useState(false)
 
-    const [image, setImage] = useState(userInfo.avatar)
+    const [image, setImage] = useState(userInfo ? userInfo.avatar : null)
 
     const dispatch = useDispatch()
 
@@ -229,9 +229,18 @@ export default function UpdateInfo(props) {
                                         </Field>
                                     </Grid>
                                     <GridForm container item xs={12} sm={5}>
-                                        <Field name="gender">
-                                            {props => (<RadioButtonInput type="radio" props={props} values={['Мужской', 'Женский']} />)}
-                                        </Field>
+                                        <RadioButtonInput
+                                            values={[
+                                                {
+                                                    value: "male",
+                                                    label: "Мужской"
+                                                }, {
+                                                    value: "female",
+                                                    label: "Женский"
+                                                },
+                                            ]}
+                                            name={{ value: "gender", label: "Пол" }}
+                                        />
                                     </GridForm>
                                     <GridForm container item xs={12} sm={6}>
                                         <Grid item xs={12}>
@@ -257,6 +266,6 @@ export default function UpdateInfo(props) {
                             </ SingUpForm>
                         )} />}
                 </SingUpPage>}
-        </div>
+        </div >
     );
 }

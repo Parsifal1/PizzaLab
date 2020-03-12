@@ -253,9 +253,18 @@ export default function SignUp() {
                                             </Field>
                                         </Grid>
                                         <GridForm container item xs={12} sm={5}>
-                                            <Field name="gender">
-                                                {props => (<RadioButtonInput type="radio" props={props} values={['Мужской', 'Женский']} />)}
-                                            </Field>
+                                            <RadioButtonInput
+                                                values={[
+                                                    {
+                                                        value: "male",
+                                                        label: "Мужской"
+                                                    }, {
+                                                        value: "female",
+                                                        label: "Женский"
+                                                    },
+                                                ]}
+                                                name={{ value: "gender", label: "Пол" }}
+                                            />
                                         </GridForm>
                                         <GridForm container item xs={12} sm={6}>
                                             <Grid item xs={12}>

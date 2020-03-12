@@ -18,7 +18,7 @@ const Background = styled.div`
 
 export default function Lk(props) {
 
-    const permission = useSelector(state => state.user.role)
+    const permission = useSelector(state => state.user ? state.user.role : null)
 
     const [expandedAdmin, setExpandedAdmin] = useState(false)
 

@@ -15,7 +15,6 @@ const ErrosMessage = styled(FormHelperText)`
 `
 
 export function TextInput({ props, error, errorText, label, variant = 'Input', disabled = false}) {
-
     return (
         <FormControl>
             <InputLabel>{label}</InputLabel>
