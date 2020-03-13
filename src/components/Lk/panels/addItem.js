@@ -7,6 +7,7 @@ import { FileInput } from '../panels/extra/FileInput'
 import axios from 'axios'
 import { Loading } from '../../Loading/Loading'
 import Message from '../../ActionsMessages/message'
+import { useUpdate } from '../../../store/updateStore'
 
 
 const AddItemForm = styled.form`
@@ -36,9 +37,7 @@ const Image = styled(Avatar)`
 
 export default function AddItem(props) {
 
-    const [errors, setErrors] = useState({
-        error: false,
-    })
+    const updateItems = useUpdate('ITEMS')
 
     const [message, setMessage] = useState(null)
 
@@ -55,12 +54,15 @@ export default function AddItem(props) {
             axios
                 .post('/api/item/update', data)
                 .then((response) => {
-                    setMessage({
-                        text: 'Позиция успешно обновлена',
-                        type: 'done'
-                    })
-                    props.updateLoading(false)
-                    setTimeout(() => { setMessage(null) }, 5000);
+                    if (response.status === 200) {
+                        setMessage({
+                            text: 'Позиция успешно обновлена',
+                            type: 'done'
+                        })
+                        props.updateLoading(false)
+                        updateItems()
+                        setTimeout(() => { setMessage(null) }, 5000);
+                    }
                 })
                 .catch(error => {
                     setLoading(false)
@@ -69,18 +71,23 @@ export default function AddItem(props) {
                         type: 'error'
                     })
                     props.updateLoading(false)
+                    updateItems()
                     setTimeout(() => { setMessage(null) }, 5000);
-                    setErrors({ ...errors, error: true })
                 })
         } else {
             axios
                 .post('/api/item/add', data)
                 .then((response) => {
-                    setMessage({
-                        text: 'Позиция успешно добавлена',
-                        type: 'done'
-                    })
-                    setTimeout(() => { setMessage(null) }, 5000);
+                    if (response.status === 200) {
+                        setLoading(false)
+                        setMessage({
+                            text: 'Позиция успешно добавлена',
+                            type: 'done'
+                        })
+                        setImage(null)
+                        updateItems()
+                        setTimeout(() => { setMessage(null) }, 5000);
+                    }
                 })
                 .catch(error => {
                     setLoading(false)
@@ -88,8 +95,8 @@ export default function AddItem(props) {
                         text: 'Ошибка при добавлении позиции',
                         type: 'error'
                     })
+                    console.log(error)
                     setTimeout(() => { setMessage(null) }, 5000);
-                    setErrors({ ...errors, error: true })
                 })
         }
     }
@@ -135,7 +142,6 @@ export default function AddItem(props) {
                             {props => (
                                 <TextInput
                                     props={props}
-                                    error={errors.error}
                                     label={'Название позиции'}
                                 />)}
                         </Field>
@@ -143,7 +149,6 @@ export default function AddItem(props) {
                             {props => (
                                 <TextInput
                                     props={props}
-                                    error={errors.error}
                                     label={'Рецепт'}
                                 />)}
                         </Field>
@@ -151,12 +156,11 @@ export default function AddItem(props) {
                             {props => (
                                 <TextInput
                                     props={props}
-                                    error={errors.error}
                                     label={'Стоимость'}
                                 />)}
                         </Field>
                         <SubmitButton variant="contained" color="primary" type="submit" disabled={!valid}>
-                            {'Добавить'}
+                            { props.update ? 'Обновить' : 'Добавить'}
                         </SubmitButton>
                     </AddItemForm>
                 )} />

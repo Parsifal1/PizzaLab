@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { createStore } from "redux"
 import { reducer } from './store/reducer'
-import { Provider } from "react-redux"
+import { Provider, useDispatch, useSelector } from "react-redux"
 import { ThemeProvider } from '@material-ui/styles';
 import { StylesProvider } from '@material-ui/styles';
 import { theme } from './Theme/Theme'
 import { createGlobalStyle } from "styled-components"
+import axios from 'axios'
 
 const GlobalStyle = createGlobalStyle`
   a {
@@ -28,6 +29,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 const store = createStore(reducer)
+
 
 const Index = () => {
   return (

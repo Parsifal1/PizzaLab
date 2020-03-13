@@ -17,6 +17,7 @@ import { theme } from '../../../Theme/Theme'
 import { Password } from "../../Authentication/LoginInput/Password";
 import { RadioButtonInput } from '../../Authentication/LoginInput/RadioButtonInput'
 import md5 from 'md5'
+import { useUpdate } from '../../../store/updateStore'
 
 const SingUpPage = styled(Container)`
     display: flex;
@@ -78,6 +79,8 @@ export default function UpdateInfo() {
 
     const dispatch = useDispatch()
 
+    const updateUser = useUpdate('USER')
+
     const handleSubmit = data => {
 
         if (data.oldPassword) {
@@ -85,6 +88,7 @@ export default function UpdateInfo() {
         }
 
         const user = {
+            id : data.id,
             avatar: data.avatar,
             firstName: data.firstName,
             secondName: data.secondName,
@@ -106,8 +110,8 @@ export default function UpdateInfo() {
                         text: 'Данные успешно обновлены',
                         type: 'done'
                     })
+                    updateUser()
                     setTimeout(() => { setMessage(null) }, 5000);
-                    dispatch({ type: "SET_USER", user: user })
                 }
             })
             .catch(error => {

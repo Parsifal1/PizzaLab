@@ -10,6 +10,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useSelector } from 'react-redux'
+import { useUpdate } from '../../../store/updateStore'
 
 const DeleteMarkedButton = styled(Button)`
 `
@@ -22,6 +23,8 @@ export default function DeleteItem() {
     const [errors, setErrors] = useState({
         error: false,
     })
+
+    const updateItems = useUpdate("ITEMS")
 
     const [message, setMessage] = useState(null)
 
@@ -53,6 +56,7 @@ export default function DeleteItem() {
                         text: 'Выбранные позиции удалены',
                         type: 'done'
                     })
+                    updateItems()
                     setTimeout(() => { setMessage(null) }, 5000);
                 })
                 .catch(error => {

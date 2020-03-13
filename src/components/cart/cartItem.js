@@ -127,7 +127,7 @@ export default function CartItem(props) {
 
     return (
         totalCount ? <Background>
-            <Image src={`data:image/${data.type};base64, ${data.data}`} />
+            <Image src={data.avatar} />
             <Info>
                 <Title>
                     {data.name}

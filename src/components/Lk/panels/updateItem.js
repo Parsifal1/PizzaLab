@@ -20,7 +20,6 @@ const BackButton = styled(Button)`
 
 export default function UpdateItem() {
 
-    //var items = props.data
     const items = useSelector(state => state.items)
 
     const [loading, setLoading] = useState(false)
@@ -28,9 +27,9 @@ export default function UpdateItem() {
     const [selected, setSelected] = useState(false);
 
     const handleUpdate = (item) => {
-
         setSelected({
-            avatar: `data:image/${item.type};base64,${item.data}`,
+            id: item.id,
+            avatar: item.avatar,
             name: item.name,
             recipe: item.recipe.join(','),
             cost: item.cost

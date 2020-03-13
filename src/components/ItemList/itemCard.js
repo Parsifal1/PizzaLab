@@ -100,7 +100,7 @@ export default function BookCard(props) {
 
     return (
         <Background key={data.id}>
-            <Image src={`data:image/${data.type};base64, ${data.data}`} />
+            <Image src={data.avatar} />
             <Info>
                 <Title>
                     {data.name}
