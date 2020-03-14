@@ -8,7 +8,7 @@ import { theme } from '../../Theme/Theme'
 import { AccountCircle } from '@material-ui/icons/';
 import { Loading } from '../Loading/Loading'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import HeaderMenu from '../menu/HeaderMenu'
 import md5 from 'md5'
 import axios from 'axios'
@@ -69,6 +69,24 @@ export default function SignUp(props) {
         error: false,
     })
 
+    const cart = useSelector(state => state.cart)
+
+    const mergeCart = (cart1, cart2) => {
+        if (cart1.length > 0) {
+            cart2.forEach(item2 => {
+                const index = cart1.findIndex(item => item.id === item2.id)
+                if (index !== -1) {
+                    cart1[index].count += item2.count
+                } else {
+                    cart1.push(item2)
+                }
+            })
+        } else {
+            cart1 = cart2
+        }
+        return cart1
+    }
+
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = data => {
@@ -82,8 +100,10 @@ export default function SignUp(props) {
                         .get('/api/user/info')
                         .then((response) => {
                             if (response.status === 200) {
-                                console.log(response.data)
+                                const currCart = cart
                                 dispatch({ type: "SET_USER", user: response.data })
+                                dispatch({ type: "SET_CART", cart: [] })
+                                dispatch({ type: "SET_CART", cart: mergeCart(response.data.cart, currCart) })
                             }
                         })
                         .catch(error => {

@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useEf, useDispatch } from 'react-redux'
 import React, { useState, useEffect } from 'react';
 import HeaderMenu from '../menu/HeaderMenu'
 import ItemList from '../ItemList/itemList'
@@ -7,6 +7,20 @@ import axios from 'axios';
 
 export default function Home() {
 
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    axios
+      .post('/api/pizza/get/page/1')
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch({ type: "SET_ITEMS", items: response.data })
+        }
+      })
+      .catch(error => {
+        console.log('Get pizza error')
+      })
+  }, [])
 
   const items = useSelector(store => store.items)
 
@@ -32,7 +46,7 @@ export default function Home() {
   return (
     <div>
       <HeaderMenu />
-      <Search handleSearch={handleSearch}/>
+      <Search handleSearch={handleSearch} />
       <ItemList data={isSearching ? searchResult : items} />
     </div>
   )

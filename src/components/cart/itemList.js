@@ -19,7 +19,7 @@ const ConfirmButton = styled(Button)`
     }
 `
 
-export default function ItemList(props) {
+export default function ItemList() {
 
     const isLogin = useSelector(state => state.user)
 

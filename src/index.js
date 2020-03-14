@@ -8,7 +8,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import { StylesProvider } from '@material-ui/styles';
 import { theme } from './Theme/Theme'
 import { createGlobalStyle } from "styled-components"
-import axios from 'axios'
+import { CookiesProvider } from 'react-cookie';
 
 const GlobalStyle = createGlobalStyle`
   a {
@@ -35,10 +35,12 @@ const Index = () => {
   return (
     <StylesProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <App />
-          <GlobalStyle theme={theme} />
-        </Provider>
+        <CookiesProvider>
+          <Provider store={store}>
+            <App />
+            <GlobalStyle theme={theme} />
+          </Provider>
+        </CookiesProvider>
       </ThemeProvider>
     </StylesProvider >
   )

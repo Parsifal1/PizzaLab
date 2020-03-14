@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import Login from './components/Authentication/Login'
 import Home from './components/mainPage/Home'
@@ -40,30 +40,38 @@ function App() {
     );
   }
 
+  const cart = useSelector(state => state.cart)
+
+  const cartCount = useSelector(state => state.itemsAmount)
+
   useEffect(() => {
-    axios
-      .post('/api/pizza/get/page/1')
+    user && axios
+      .post('/api/cart/save', cart)
       .then((response) => {
         if (response.status === 200) {
-          dispatch({ type: "SET_ITEMS", items: response.data })
+          console.log('Cart saved')
         }
       })
       .catch(error => {
-        console.log('Get pizza error')
+        console.log('Cart save error', error)
       })
-    if (!user) {
-      axios
-        .get('/api/user/info')
-        .then((response) => {
-          if (response.status === 200) {
-            dispatch({ type: "SET_USER", user: response.data })
+  }, [cartCount])
+
+  useEffect(() => {
+    axios
+      .get('/api/user/info')
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch({ type: "SET_USER", user: response.data })
+          if (response.data.cart.length) {
+            dispatch({ type: "SET_CART", cart: response.data.cart })
           }
-        })
-        .catch(error => {
-          console.log('User not logged in')
-        })
-    }
-  })
+        }
+      })
+      .catch(error => {
+        console.log('User not logged in', error)
+      })
+  }, [])
 
   return (
     <Router>

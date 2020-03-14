@@ -75,11 +75,14 @@ app.post('/api/login', (req, res) => {
 
 app.get('/api/pizza/search/:searchString', (req, res) => {
     const searchString = new RegExp(`${req.params.searchString.toLowerCase().split(/[ -]/).join('.')}`)
-    const results = []
+    var results = []
     data.forEach(item => {
         if (item.name.toLowerCase().search(searchString) !== -1) {
             results.push(item)
         }
+    })
+    results = results.map(item => {
+        return { ...item, avatar: `data:image/${item.type};base64, ${item.avatar}` }
     })
     res.status(200).send(results)
 })
@@ -128,6 +131,13 @@ app.post('/api/item/add', (req, res) => {
     }
     data.push(item)
     res.status(200).send('Updated')
+})
+
+app.post('/api/cart/save', (req, res) => {
+    const index = users.findIndex(user => user.id === req.session.id)
+    users[index].cart = req.body
+    console.log(users[index].cart.length)
+    res.status(200).send('Cart saved')
 })
 
 app.post('/api/item/update', (req, res) => {

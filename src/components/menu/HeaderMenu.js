@@ -40,6 +40,7 @@ export default function Menu() {
             .get('api/logout')
             .then(response => {
                 dispatch({ type: "SET_USER", user: null })
+                dispatch({ type: "SET_CART", cart: []})
                 console.log('logOut')
             })
         dispatch({ type: "SET_USER", user: null })
