@@ -9,6 +9,7 @@ import axios from 'axios'
 import Auth from './components/Authentication/Auth'
 import SingUp from './components/Authentication/SingUp'
 import Lk from './components/Lk/lk'
+import Requests from './components/Requests/requests'
 
 axios.defaults.baseURL = serverUrl
 axios.defaults.headers.post['Content-Type'] = 'application/JSON';
@@ -82,6 +83,9 @@ function App() {
       <Route path="/auth/registration" component={SingUp} />
       <PrivateRoute path="/lk">
         <Lk />
+      </PrivateRoute>
+      <PrivateRoute path="/requests">
+        <Requests />
       </PrivateRoute>
     </Router>
   );

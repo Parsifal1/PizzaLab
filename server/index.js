@@ -36,7 +36,6 @@ app.use(cookieSession({
 }))
 
 app.all('*', (request, response, next) => {
-    console.log("Request to " + request.originalUrl)
     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
     response.setHeader('Access-Control-Request-Methods', 'POST, GET, OPTIONS')
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
@@ -52,6 +51,15 @@ app.options('*', (request, response, next) => {
     response.setHeader('Access-Control-Allow-Credentials', 'true')
     response.setHeader('Content-Type', 'application/json')
     response.status(200).send()
+})
+
+app.all('*', (request, response, next) => {
+    const date = new Date()
+    const hh = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+    const mm = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+    const ss = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
+    console.log(`[${hh}:${mm}:${ss}] Request to ${request.originalUrl}`)
+    next()
 })
 
 //get pizza list
@@ -91,8 +99,8 @@ app.post('/api/add/user', (req, res) => {
     const data = {
         ...req.body,
         id: Math.round(Math.random() * 100000000),
-        type: req.body.avatar.slice(req.body.avatar.indexOf('/') + 1, req.body.avatar.indexOf(';')),
-        avatar: req.body.avatar.slice(req.body.avatar.indexOf(',') + 1)
+        type: req.body.type ? req.body.avatar.slice(req.body.avatar.indexOf('/') + 1, req.body.avatar.indexOf(';')) : null,
+        avatar: req.body.avatar ? req.body.avatar.slice(req.body.avatar.indexOf(',') + 1) : null
     }
     users.push(data)
     res.status(200).send('Registered')
@@ -136,7 +144,6 @@ app.post('/api/item/add', (req, res) => {
 app.post('/api/cart/save', (req, res) => {
     const index = users.findIndex(user => user.id === req.session.id)
     users[index].cart = req.body
-    console.log(users[index].cart.length)
     res.status(200).send('Cart saved')
 })
 
@@ -156,8 +163,34 @@ app.post('/api/item/update', (req, res) => {
 })
 
 app.post('/api/cart/confirm', (req, res) => {
-
+    addStat(req.session.id, req.body)
     res.status(200).send('Confirmed')
+})
+
+app.get('/api/requests/allstat', (req, res) => {
+    const requestData = stat.map(statItem => {
+        const userInfo = users[users.findIndex(user => user.id === statItem.userId)]
+        const requestInfo = statItem.cart.map( cart => {
+            const cartInfo = data[data.findIndex(cartItem => cartItem.id === cart.id)]
+            return {...cartInfo, avatar: `data:image/${cartInfo.type};base64, ${cartInfo.avatar}`, count: cart.count}
+        })
+        return {
+            id : stat.id,
+            user : {
+                id : userInfo.id,
+                fullName : `${userInfo.firstName} ${userInfo.secondName}`,
+                avatar: `data:image/${userInfo.type};base64, ${userInfo.avatar}`,
+                address: statItem.address,
+                phone_number: userInfo.phone_number
+            },
+            request : requestInfo,
+            price : statItem.totalCost,
+            date : statItem.date,
+            status : statItem.status
+        }
+    })
+    console.log(requestData)
+    res.status(200).send(requestData)
 })
 
 app.post('/api/item/delete', (req, res) => {
@@ -202,6 +235,38 @@ app.get('*', (req, res) => {
 app.post('*', (req, res) => {
     res.status(404).send("Page not found")
 })
+
+const addStat = (userId, cart) => {
+    const countPrice = (totalCost, cartItem) => totalCost + cartItem.count * cartItem.cost
+    const date = getDate(new Date())
+    stat.push({
+        id: Math.round(Math.random() * 100000000),
+        userId: userId,
+        cart: cart.map(item => {
+            return {
+                id: item.id,
+                count: item.count
+            }
+        }),
+        totalCost: cart.reduce(countPrice, 0),
+        address: users[users.findIndex(user => user.id === userId)].address,
+        date: `[${date.hh}:${date.min}:${date.ss}] ${date.yy}-${date.mm}-${date.dd}`,
+        status: 'waiting'
+    })
+}
+
+const getDate = (date = new Date()) => {
+    return {
+        yy: date.getFullYear(),
+        mm: date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1),
+        dd: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+        hh: date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
+        min: date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
+        ss: date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds(),
+    }
+}
+
+const stat = []
 
 const data = [
     {

@@ -87,12 +87,12 @@ export default function Menu() {
         )
     }
 
-    const Notifications = () => {
+    const Requests = () => {
         return (
             <MenuButton
-                path={'/auth/notification'}
+                path={'/requests'}
                 icon={'notifications'}
-                text={'Уведомления'}
+                text={'Заказы'}
             />
         )
     }
@@ -126,7 +126,7 @@ export default function Menu() {
             {user ?
                 <RightMenuBar>
                     <Cart />
-                    <Notifications />
+                    {user.role === 'admin' && <Requests />}
                     <AccManagement />
                     <LogOut />
                 </RightMenuBar>
