@@ -170,27 +170,35 @@ app.post('/api/cart/confirm', (req, res) => {
 app.get('/api/requests/allstat', (req, res) => {
     const requestData = stat.map(statItem => {
         const userInfo = users[users.findIndex(user => user.id === statItem.userId)]
-        const requestInfo = statItem.cart.map( cart => {
+        const requestInfo = statItem.cart.map(cart => {
             const cartInfo = data[data.findIndex(cartItem => cartItem.id === cart.id)]
-            return {...cartInfo, avatar: `data:image/${cartInfo.type};base64, ${cartInfo.avatar}`, count: cart.count}
+            return { ...cartInfo, avatar: `data:image/${cartInfo.type};base64, ${cartInfo.avatar}`, count: cart.count }
         })
         return {
-            id : stat.id,
-            user : {
-                id : userInfo.id,
-                fullName : `${userInfo.firstName} ${userInfo.secondName}`,
+            id: statItem.id,
+            name: `${userInfo.firstName} ${userInfo.secondName}`,
+            phone_number: userInfo.phone_number,
+            address: userInfo.address,
+            price: statItem.totalCost,
+            date: statItem.date,
+            status: statItem.status,
+            requestName: requestInfo.map(item => {
+                return `${item.name} x${item.count}`
+            }).join('\n'),
+            user: {
+                id: userInfo.id,
                 avatar: `data:image/${userInfo.type};base64, ${userInfo.avatar}`,
-                address: statItem.address,
-                phone_number: userInfo.phone_number
             },
-            request : requestInfo,
-            price : statItem.totalCost,
-            date : statItem.date,
-            status : statItem.status
+            request: requestInfo
         }
     })
-    console.log(requestData)
     res.status(200).send(requestData)
+})
+
+app.get('/api/requests/confirm/:id', (req,res) => {
+    const index = stat.findIndex(item => item.id == req.params.id)
+    stat[index].status = 'confirmed' 
+    res.status(200).send('Success')
 })
 
 app.post('/api/item/delete', (req, res) => {
@@ -238,7 +246,6 @@ app.post('*', (req, res) => {
 
 const addStat = (userId, cart) => {
     const countPrice = (totalCost, cartItem) => totalCost + cartItem.count * cartItem.cost
-    const date = getDate(new Date())
     stat.push({
         id: Math.round(Math.random() * 100000000),
         userId: userId,
@@ -250,7 +257,7 @@ const addStat = (userId, cart) => {
         }),
         totalCost: cart.reduce(countPrice, 0),
         address: users[users.findIndex(user => user.id === userId)].address,
-        date: `[${date.hh}:${date.min}:${date.ss}] ${date.yy}-${date.mm}-${date.dd}`,
+        date: Date.parse(new Date()),//`[${date.hh}:${date.min}:${date.ss}] ${date.yy}-${date.mm}-${date.dd}`,
         status: 'waiting'
     })
 }
