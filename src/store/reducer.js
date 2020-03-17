@@ -3,6 +3,7 @@ const initialState = {
     user: null,
     cart: [],
     itemsAmount: 0,
+    requestCount: 0
 }
 
 export function reducer(state = initialState, action) {
@@ -24,6 +25,12 @@ export function reducer(state = initialState, action) {
                 ...state,
                 itemsAmount: totalAmount,
                 cart: action.cart
+            }
+        case "SET_REQUEST_COUNT":
+            console.log(action.requestCount)
+            return {
+                ...state,
+                requestCount: action.requestCount
             }
         default:
             return state

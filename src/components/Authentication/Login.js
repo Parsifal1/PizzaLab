@@ -107,7 +107,7 @@ export default function SignUp(props) {
                             }
                         })
                         .catch(error => {
-                            console.log('User not logged in')
+                            console.log('User not logged in', error)
                         })
                     dispatch({ type: "SET_USER", user: response.data })
                     setLoading(false)

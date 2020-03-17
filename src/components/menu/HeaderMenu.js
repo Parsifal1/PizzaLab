@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container } from '@material-ui/core';
 import styled from 'styled-components'
 import { theme } from '../../Theme/Theme'
@@ -6,6 +6,7 @@ import MenuButton from './Buttons/MenuButton'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import axios from 'axios';
+import { RequestSocket } from '../Sockets/sockets'
 
 const BackgroundMenu = styled(Container)`
     height: 50px;
@@ -35,12 +36,14 @@ export default function Menu() {
 
     const totalItems = useSelector(state => state.itemsAmount)
 
+    const requestCount = useSelector(state => state.requestCount)
+
     const handleLogOut = () => {
         axios
             .get('api/logout')
             .then(response => {
                 dispatch({ type: "SET_USER", user: null })
-                dispatch({ type: "SET_CART", cart: []})
+                dispatch({ type: "SET_CART", cart: [] })
                 console.log('logOut')
             })
         dispatch({ type: "SET_USER", user: null })
@@ -93,6 +96,7 @@ export default function Menu() {
                 path={'/requests'}
                 icon={'notifications'}
                 text={'Заказы'}
+                count={requestCount}
             />
         )
     }

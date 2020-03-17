@@ -4,6 +4,8 @@ var cookieSession = require('cookie-session')
 //var mail = require('./nodeMailer/nodeMailerWithTemp');
 var md5 = require('md5')
 var app = express();
+var socketServer = require('http').createServer(app);
+var io = require('socket.io')(socketServer);
 
 /*// database connection
 const Client = require('pg').Client;
@@ -24,16 +26,45 @@ const pg = new Client({
 //pg.connect();
 
 // middleware
-app.listen(8181, function () {
-});
-app.use(express.json({ limit: '100mb' }));
-app.use(cookieParser())
-app.use(cookieSession({
+
+var Session = cookieSession({
     name: 'session',
     id: 0,
     keys: ["key1", "key2"],
     maxAge: 18000000
-}))
+})
+
+app.listen(8181, function () {
+});
+app.use(express.json({ limit: '100mb' }));
+app.use(cookieParser())
+io.use((socket, next) => {
+    Session(socket.request, socket.request.res, next)
+});
+app.use(Session)
+
+/************************************   SOCKETS    **************************/
+
+socketServer.listen(8080, () => { })
+
+io.use((socket, next) => {
+    if (socket.request.session.id) return next()
+    next(new Error('Authentication error'))
+})
+
+var requests = io
+    .of('/requests')
+    .on('connection', (socket) => {
+        const date = getDate(new Date())
+        console.log(`[${date.hh}:${date.min}:${date.ss}][REQUEST] socket active`)
+        socket.on('disconnect', () => {
+            console.log(`[${date.hh}:${date.min}:${date.ss}][REQUEST] socket disconnected`);
+        });
+        socket.on('updated', () => {
+            io.of('/requests').emit('updated')
+        })
+    })
+/************************************   SOCKETS    **************************/
 
 app.all('*', (request, response, next) => {
     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
@@ -61,7 +92,6 @@ app.all('*', (request, response, next) => {
     console.log(`[${hh}:${mm}:${ss}] Request to ${request.originalUrl}`)
     next()
 })
-
 //get pizza list
 app.post('/api/pizza/get/page/:page', (req, res) => {
     const itemsOnPage = 10
@@ -164,7 +194,14 @@ app.post('/api/item/update', (req, res) => {
 
 app.post('/api/cart/confirm', (req, res) => {
     addStat(req.session.id, req.body)
+    requests.emit('updated')
     res.status(200).send('Confirmed')
+})
+
+app.get('/api/requests/getCount', (req, res) => {
+    var total = stat.length ? stat.reduce(
+        (total, item) => total + (item.status === 'waiting' ? 1 : 0), 0) : 0 + ''
+    res.status(200).send(total + '')
 })
 
 app.get('/api/requests/allstat', (req, res) => {
@@ -195,9 +232,9 @@ app.get('/api/requests/allstat', (req, res) => {
     res.status(200).send(requestData)
 })
 
-app.get('/api/requests/confirm/:id', (req,res) => {
+app.get('/api/requests/confirm/:id', (req, res) => {
     const index = stat.findIndex(item => item.id == req.params.id)
-    stat[index].status = 'confirmed' 
+    stat[index].status = 'confirmed'
     res.status(200).send('Success')
 })
 

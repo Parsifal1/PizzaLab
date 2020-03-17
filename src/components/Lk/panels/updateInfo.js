@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { TextInput } from '../../Authentication/LoginInput/TextInput'
 import { FileInput } from '../../Authentication/LoginInput/FileInput'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { Loading } from '../../Loading/Loading'
 import Message from '../../ActionsMessages/message'
@@ -76,8 +76,6 @@ export default function UpdateInfo() {
     const [loading, setLoading] = useState(false)
 
     const [image, setImage] = useState(userInfo ? userInfo.avatar : null)
-
-    const dispatch = useDispatch()
 
     const updateUser = useUpdate('USER')
 

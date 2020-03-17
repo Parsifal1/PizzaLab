@@ -10,7 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button'
 
@@ -107,7 +107,6 @@ export default function StatTable({ data, handleChange }) {
 
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('date');
-    const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -127,26 +126,6 @@ export default function StatTable({ data, handleChange }) {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
-        }
-
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -186,7 +165,6 @@ export default function StatTable({ data, handleChange }) {
                         aria-label="enhanced table"
                     >
                         <EnhancedTableHead
-                            numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
@@ -201,10 +179,8 @@ export default function StatTable({ data, handleChange }) {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={event => handleClick(event, row.name)}
-                                            role="checkbox"
                                             tabIndex={-1}
-                                            key={row.name}
+                                            key={row.name + row.date}
                                         >
                                             <TableCell align="center" component="th" id={labelId} scope="row" padding="none">
                                                 {row.name}
@@ -213,7 +189,7 @@ export default function StatTable({ data, handleChange }) {
                                             <Cell align="center">{row.address}</Cell>
                                             <Cell align="center">{row.price}</Cell>
                                             <Cell align="center">{getDate(new Date(row.date))}</Cell>
-                                            <Cell align="center"><RequestStatus status={row.status} id={row.id}/></Cell>
+                                            <Cell align="center"><RequestStatus status={row.status} id={row.id} /></Cell>
                                             <Cell align="left">{row.requestName}</Cell>
                                         </TableRow>
                                     );

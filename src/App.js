@@ -1,15 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import Login from './components/Authentication/Login'
 import Home from './components/mainPage/Home'
 import { useDispatch, useSelector } from 'react-redux'
-import { serverUrl } from './config'
+import { serverUrl, requestSocketUrl } from './config'
 import Cart from './components/cart/cart'
 import axios from 'axios'
 import Auth from './components/Authentication/Auth'
 import SingUp from './components/Authentication/SingUp'
 import Lk from './components/Lk/lk'
 import Requests from './components/Requests/requests'
+import { RequestSocket } from './components/Sockets/sockets'
 
 axios.defaults.baseURL = serverUrl
 axios.defaults.headers.post['Content-Type'] = 'application/JSON';
@@ -45,6 +46,9 @@ function App() {
 
   const cartCount = useSelector(state => state.itemsAmount)
 
+  const requestCount = useSelector(state => state.requestCount)
+
+
   useEffect(() => {
     user && axios
       .post('/api/cart/save', cart)
@@ -59,6 +63,13 @@ function App() {
   }, [cartCount])
 
   useEffect(() => {
+    if (user)
+      RequestSocket.connect()
+    else
+      RequestSocket.disconnect()
+  }, [user !== null])
+
+  useEffect(() => {
     axios
       .get('/api/user/info')
       .then((response) => {
@@ -71,6 +82,19 @@ function App() {
       })
       .catch(error => {
         console.log('User not logged in', error)
+      })
+    RequestSocket.on('updated', () => {
+      axios
+        .get(`/api/requests/getCount`)
+        .then(response => {
+          console.log(response.data)
+          dispatch({ type: "SET_REQUEST_COUNT", requestCount: response.data })
+        })
+    })
+    axios
+      .get(`/api/requests/getCount`)
+      .then(response => {
+        dispatch({ type: "SET_REQUEST_COUNT", requestCount: response.data })
       })
   }, [])
 

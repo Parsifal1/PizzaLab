@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components'
 import { Container, InputBase } from '@material-ui/core';
 import { theme } from '../../Theme/Theme'
